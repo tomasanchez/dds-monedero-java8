@@ -48,8 +48,7 @@ public class Cuenta {
    * @throws MaximaCantidadDepositosException cuando excede cierto numeros.
    */
   private void verificarMaximaCantidadDepositos() {
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito())
-        .count() >= this.maximosDepositos) {
+    if (contarDepositos() >= this.maximosDepositos) {
       throw new MaximaCantidadDepositosException(
           "Ya excedio los " + this.maximosDepositos + " depositos diarios");
     }
@@ -77,6 +76,15 @@ public class Cuenta {
 
   public void setMovimientos(List<Movimiento> movimientos) {
     this.movimientos = movimientos;
+  }
+
+  /**
+   * Cuenta la cantidad de movimientos que son depositos.
+   * 
+   * @return la cantidad de depositos.
+   */
+  public long contarDepositos() {
+    return getMovimientos().stream().filter(Movimiento::isDeposito).count();
   }
 
   public void poner(double cuanto) {
