@@ -14,25 +14,30 @@ public class Cuenta {
   private double saldo;
   private List<Movimiento> movimientos = new ArrayList<>();
 
-  public Cuenta() {
-    this(0);
+  /**
+   * Verfica si se supera el monto de extaccion diaria.
+   * 
+   * @param cuanto el monto
+   * @param limite el limite de extaccion
+   * @throws MaximoExtraccionDiarioException si supera el límite
+   */
+  private void verificarExtraccionDiaria(double cuanto, double limite) {
+    if (cuanto > limite) {
+      throw new MaximoExtraccionDiarioException(
+          "No puede extraer mas de $ " + 1000 + " diarios, límite: " + limite);
+    }
   }
 
-  public Cuenta(double montoInicial) {
-    saldo = montoInicial;
-  }
-
-  public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
-  }
-
-  public void poner(double cuanto) {
-
-    verificarMontoNegativo(cuanto);
-
-    verificarMaximaCantidadDepositos();
-
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+  /**
+   * Valida si puede realizarse la extaccion.
+   * 
+   * @param cuanto el monto
+   * @throws SaldoMenorException cuando se desea sacar mas que el el saldo.
+   */
+  private void verificarSaldoMenor(double cuanto) {
+    if (getSaldo() - cuanto < 0) {
+      throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
+    }
   }
 
   /**
@@ -58,19 +63,38 @@ public class Cuenta {
     }
   }
 
+  public Cuenta() {
+    this(0);
+  }
+
+  public Cuenta(double montoInicial) {
+    saldo = montoInicial;
+  }
+
+  public void setMovimientos(List<Movimiento> movimientos) {
+    this.movimientos = movimientos;
+  }
+
+  public void poner(double cuanto) {
+
+    verificarMontoNegativo(cuanto);
+
+    verificarMaximaCantidadDepositos();
+
+    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+  }
+
   public void sacar(double cuanto) {
 
     verificarMontoNegativo(cuanto);
 
-    if (getSaldo() - cuanto < 0) {
-      throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
-    }
+    verificarSaldoMenor(cuanto);
+
     double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
     double limite = 1000 - montoExtraidoHoy;
-    if (cuanto > limite) {
-      throw new MaximoExtraccionDiarioException(
-          "No puede extraer mas de $ " + 1000 + " diarios, límite: " + limite);
-    }
+
+    verificarExtraccionDiaria(cuanto, limite);
+
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
