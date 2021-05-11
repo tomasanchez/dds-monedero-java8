@@ -30,11 +30,20 @@ public class Cuenta {
 
     verificarMontoNegativo(cuanto);
 
+    verificarMaximaCantidadDepositos();
+
+    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+  }
+
+  /**
+   * Valia si se encuentra dentro de la Maxima cantidad de depósitos.
+   * 
+   * @throws MaximaCantidadDepositosException cuando excede cierto numeros.
+   */
+  private void verificarMaximaCantidadDepositos() {
     if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
-
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
 
   /**
