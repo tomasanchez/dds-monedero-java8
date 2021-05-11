@@ -85,7 +85,7 @@ public class Cuenta {
 
     verificarMaximaCantidadDepositos();
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    agregarMovimiento(LocalDate.now(), cuanto, true);
   }
 
   public void sacar(double cuanto) {
@@ -99,12 +99,13 @@ public class Cuenta {
 
     verificarExtraccionDiaria(cuanto, limite);
 
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+    agregarMovimiento(LocalDate.now(), cuanto, false);
   }
 
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
+    this.saldo += movimiento.isDeposito() ? movimiento.getMonto() : -movimiento.getMonto();
   }
 
   public double getMontoExtraidoA(LocalDate fecha) {
