@@ -23,6 +23,21 @@ public class Movimiento {
     return fecha;
   }
 
+  public Movimiento setFecha(LocalDate fecha) {
+    this.fecha = fecha;
+    return this;
+  }
+
+  public Movimiento setMonto(double monto) {
+    this.monto = monto;
+    return this;
+  }
+
+  public Movimiento setEsDeposito(boolean esDeposito) {
+    this.esDeposito = esDeposito;
+    return this;
+  }
+
   public boolean fueDepositado(LocalDate fecha) {
     return isDeposito() && esDeLaFecha(fecha);
   }
