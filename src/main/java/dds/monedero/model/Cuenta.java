@@ -24,8 +24,7 @@ public class Cuenta {
    * @throws MaximoExtraccionDiarioException si supera el límite
    */
   private void verificarExtraccionDiaria(double cuanto) {
-    double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
-    double limite = this.limite - montoExtraidoHoy;
+    double limite = getLimiteActual();
 
     if (cuanto > limite) {
       throw new MaximoExtraccionDiarioException(
@@ -77,10 +76,6 @@ public class Cuenta {
     saldo = montoInicial;
   }
 
-  public void setMovimientos(List<Movimiento> movimientos) {
-    this.movimientos = movimientos;
-  }
-
   /**
    * Cuenta la cantidad de movimientos que son depositos.
    * 
@@ -124,6 +119,15 @@ public class Cuenta {
 
   public List<Movimiento> getMovimientos() {
     return movimientos;
+  }
+
+  /**
+   * Obtiene el límite de extaccion restante
+   * 
+   * @return el limite actual
+   */
+  public double getLimiteActual() {
+    return this.limite - getMontoExtraidoA(LocalDate.now());
   }
 
   public double getSaldo() {
