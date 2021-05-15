@@ -17,6 +17,8 @@ public abstract class Movimiento {
     return monto;
   }
 
+  public abstract double getSaldo();
+
   public LocalDate getFecha() {
     return fecha;
   }

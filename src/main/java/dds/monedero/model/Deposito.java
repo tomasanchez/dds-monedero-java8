@@ -17,4 +17,9 @@ public class Deposito extends Movimiento {
     public boolean fueDepositado(LocalDate fecha) {
         return esDeLaFecha(fecha);
     }
+
+    @Override
+    public double getSaldo() {
+        return this.getMonto();
+    }
 }

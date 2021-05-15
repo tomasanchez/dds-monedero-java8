@@ -19,8 +19,7 @@ public class Extraccion extends Movimiento {
     }
 
     @Override
-    public double getMonto() {
-        double monto = super.getMonto();
-        return -monto;
+    public double getSaldo() {
+        return -this.getMonto();
     }
 }
