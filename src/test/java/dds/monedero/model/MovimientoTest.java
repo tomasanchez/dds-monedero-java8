@@ -14,31 +14,11 @@ public class MovimientoTest {
 
     @BeforeEach
     void init() {
-        this.movimiento = new Movimiento(LocalDate.now(), 100, true);
+        this.movimiento = new Deposito(LocalDate.now(), 100);
     }
 
     @Test
     void getFecha() {
         assertEquals(LocalDate.now(), movimiento.getFecha());
-    }
-
-    @Test
-    void esDeposito() {
-        assertTrue(movimiento.isDeposito());
-        movimiento.setEsDeposito(false);
-        assertFalse(movimiento.isDeposito());
-    }
-
-    @Test
-    void fueDepositadoHoyNoAyer() {
-        assertTrue(movimiento.fueDepositado(LocalDate.now()));
-        assertFalse(movimiento.fueDepositado(LocalDate.now().minusDays(1)));
-    }
-
-    @Test
-    void noEsDepositoEsRetiro() {
-        movimiento.setEsDeposito(false);
-        assertTrue(movimiento.fueExtraido(LocalDate.now()));
-        assertFalse(movimiento.fueDepositado(LocalDate.now()));
     }
 }
