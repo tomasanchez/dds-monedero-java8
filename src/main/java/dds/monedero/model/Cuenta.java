@@ -82,23 +82,25 @@ public class Cuenta {
    * @return la cantidad de depositos.
    */
   public long contarDepositos() {
-    return getMovimientos().stream().filter(Movimiento::isDeposito).count();
+    return getMovimientos().stream().filter(movimiento -> movimiento.fueDepositado(LocalDate.now()))
+        .count();
   }
 
-  private void realizarOperacion(double cuanto, boolean isDeposito, Runnable verificacion) {
-    verificarMontoNegativo(cuanto);
+  private void realizarOperacion(Movimiento movimiento, Runnable verificacion) {
+    verificarMontoNegativo(movimiento.getMonto());
     verificacion.run();
-    agregarMovimiento(new Movimiento(LocalDate.now(), cuanto, isDeposito));
+    agregarMovimiento(movimiento);
   }
 
   public void poner(double cuanto) {
 
-    realizarOperacion(cuanto, true, () -> verificarMaximaCantidadDepositos());
+    realizarOperacion(new Deposito(LocalDate.now(), cuanto),
+        () -> verificarMaximaCantidadDepositos());
   }
 
   public void sacar(double cuanto) {
 
-    realizarOperacion(cuanto, false, () -> {
+    realizarOperacion(new Extraccion(LocalDate.now(), cuanto), () -> {
       verificarSaldoMenor(cuanto);
       verificarExtraccionDiaria(cuanto);
     });
@@ -107,12 +109,11 @@ public class Cuenta {
 
   public void agregarMovimiento(Movimiento movimiento) {
     movimientos.add(movimiento);
-    this.saldo += movimiento.isDeposito() ? movimiento.getMonto() : -movimiento.getMonto();
+    this.saldo += movimiento.getSaldo();
   }
 
   public double getMontoExtraidoA(LocalDate fecha) {
-    return getMovimientos().stream()
-        .filter(movimiento -> movimiento.isDeposito() && movimiento.esDeLaFecha(fecha))
+    return getMovimientos().stream().filter(movimiento -> movimiento.fueExtraido(fecha))
         .mapToDouble(Movimiento::getMonto).sum();
   }
 
